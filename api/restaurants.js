@@ -41,9 +41,9 @@ export default async function handler(req, res) {
       const f = rec.fields || {};
 
       const photos = [
-        f["Image1(Menu)"]?.[0]?.url,
-        f["Image2(Vibe)"]?.[0]?.url,
-        f["Image3(Menu)"]?.[0]?.url,
+        f["Image1(Food)"]?.[0]?.url || null,
+        f["Image2(Vibe)"]?.[0]?.url || null,
+        f["Image3(Menu)"]?.[0]?.url || null,
       ].filter(Boolean);
 
       return {

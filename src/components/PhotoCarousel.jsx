@@ -1,55 +1,58 @@
-import { useRef, useState, useEffect } from 'react'
+import { useMemo, useState } from "react"
 
-const SLIDES = ['menu', 'atmosphere', 'menuboard']
+export default function PhotoCarousel({ photos = [] }) {
+  const safePhotos = useMemo(
+    () => (Array.isArray(photos) ? photos.filter(Boolean) : []),
+    [photos]
+  )
 
-export default function PhotoCarousel({ photos }) {
-  const scrollRef = useRef(null)
-  const [activeIndex, setActiveIndex] = useState(0)
+  const [idx, setIdx] = useState(0)
 
-  const updateActiveIndex = () => {
-    const el = scrollRef.current
-    if (!el) return
-    const scrollLeft = el.scrollLeft
-    const width = el.offsetWidth
-    const index = Math.round(scrollLeft / width)
-    setActiveIndex(Math.min(Math.max(0, index), 2))
+  if (!safePhotos.length) {
+    return (
+      <div className="photo-carousel empty">
+        <div className="photo-placeholder">No photo</div>
+      </div>
+    )
   }
 
-  useEffect(() => {
-    const el = scrollRef.current
-    if (!el) return
-    el.addEventListener('scroll', updateActiveIndex)
-    return () => el.removeEventListener('scroll', updateActiveIndex)
-  }, [])
-
-  const images = [
-    photos?.menu,
-    photos?.atmosphere,
-    photos?.menuboard,
-  ].filter(Boolean)
+  const prev = () => setIdx((i) => (i - 1 + safePhotos.length) % safePhotos.length)
+  const next = () => setIdx((i) => (i + 1) % safePhotos.length)
 
   return (
-    <div className="restaurant-card-carousel-wrap">
-      <div
-        ref={scrollRef}
-        className="photo-carousel"
-        role="region"
-        aria-label="식당 사진"
-      >
-        {images.map((src, i) => (
-          <div key={i} className="photo-carousel-slide">
-            <img src={src} alt="" loading="lazy" />
+    <div className="photo-carousel">
+      <div className="photo-frame">
+        <img
+          src={safePhotos[idx]}
+          alt={`restaurant photo ${idx + 1}`}
+          loading="lazy"
+          referrerPolicy="no-referrer"
+        />
+      </div>
+
+      {safePhotos.length > 1 && (
+        <div className="photo-controls">
+          <button type="button" className="photo-btn" onClick={prev} aria-label="이전 사진">
+            ‹
+          </button>
+
+          <div className="photo-dots" aria-label="사진 인디케이터">
+            {safePhotos.map((_, i) => (
+              <button
+                key={i}
+                type="button"
+                className={`photo-dot ${i === idx ? "active" : ""}`}
+                onClick={() => setIdx(i)}
+                aria-label={`${i + 1}번 사진`}
+              />
+            ))}
           </div>
-        ))}
-      </div>
-      <div className="photo-carousel-dots" aria-hidden>
-        {[0, 1, 2].map((i) => (
-          <span
-            key={i}
-            className={`photo-carousel-dot ${i === activeIndex ? 'active' : ''}`}
-          />
-        ))}
-      </div>
+
+          <button type="button" className="photo-btn" onClick={next} aria-label="다음 사진">
+            ›
+          </button>
+        </div>
+      )}
     </div>
   )
 }
