@@ -36,7 +36,6 @@ export default function AppContainer({ children }) {
           style={{ width: '100%', minHeight: '100vh' }}
         >
           {children}
-          <Footer />
         </motion.div>
       </AnimatePresence>
     </div>
