@@ -35,7 +35,7 @@ export default function RestaurantCard({ restaurant }) {
               </svg>
             </button>
             <h3 className="restaurant-card-name">{restaurant.name}</h3>
-            <p className="restaurant-card-desc">{restaurant.shortDesc}</p>
+            <p className="restaurant-card-desc preserve-breaks">{restaurant.shortDesc}</p>
             <div className="restaurant-card-actions">
               <button
                 type="button"

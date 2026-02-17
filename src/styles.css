@@ -377,6 +377,7 @@ body {
     align-items: stretch;
   }
   .restaurant-card-content {
+    position: relative;
     flex: 1;
     min-width: 0;
   }
@@ -394,7 +395,14 @@ body {
   color: var(--text-muted);
   margin: 0 0 0.75rem;
   line-height: 1.4;
+  padding-right: 56px;
 }
+
+.preserve-breaks {
+  white-space: pre-wrap;   /* 엔터/줄바꿈 유지 */
+  word-break: break-word;  /* 긴 단어도 줄바꿈 */
+}
+
 
 .restaurant-card-actions {
   display: flex;
