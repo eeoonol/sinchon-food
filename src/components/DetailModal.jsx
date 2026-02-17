@@ -7,7 +7,14 @@ export default function DetailModal({ restaurant, onClose }) {
     return () => document.body.classList.remove('modal-open')
   }, [])
 
-  const d = restaurant.detail || {}
+  const d = {
+    sinchonStationWalkMin: restaurant.walkFromSinchonMin ?? null,
+    yonseiGateWalkMin: restaurant.walkFromYonseiMin ?? null,
+    seatingLayout: restaurant.seatingLayout || '',
+    sizeLevel: restaurant.size || '',
+    menuItems: restaurant.menuItems || [],
+    notes: restaurant.notes || '',
+  }
   const layout = Array.isArray(d.seatingLayout) ? d.seatingLayout.join(', ') : (d.seatingLayout || '-')
   const sizeLevel = d.sizeLevel || '-'
 
