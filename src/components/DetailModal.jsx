@@ -15,8 +15,35 @@ export default function DetailModal({ restaurant, onClose }) {
     menuItems: restaurant.menuItems || [],
     notes: restaurant.notes || '',
   }
-  const layout = Array.isArray(d.seatingLayout) ? d.seatingLayout.join(', ') : (d.seatingLayout || '-')
-  const sizeLevel = d.sizeLevel || '-'
+  
+  // 좌석 라벨 변환
+  const SEATING_LABELS = {
+    face_to_face: "마주보고",
+    side_by_side: "나란히",
+  }
+
+  // 음식점 크기 라벨 변환 (대소문자 둘 다 허용)
+  const SIZE_LABELS = {
+    L: "대",
+    M: "중",
+    S: "소",
+    l: "대",
+    m: "중",
+    s: "소",
+  }
+
+  // seatingLayout 표시값 만들기
+  const rawLayout = d.seatingLayout
+  let layout = "-"
+  
+  if (Array.isArray(rawLayout)) {
+    layout = rawLayout.map((v) => SEATING_LABELS[v] || v).join(", ")
+  } else if (rawLayout) {
+    layout = SEATING_LABELS[rawLayout] || rawLayout
+  }
+  
+  // size 표시값 만들기
+  const sizeLevel = SIZE_LABELS[d.sizeLevel] || d.sizeLevel || "-"
 
   const content = (
     <div
