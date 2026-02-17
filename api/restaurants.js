@@ -1,50 +1,41 @@
 export default async function handler(req, res) {
-  try {
-    const token = process.env.AIRTABLE_TOKEN;
-    const baseId = process.env.AIRTABLE_BASE_ID;
-    const table = process.env.AIRTABLE_TABLE;
+  const AIRTABLE_TOKEN = process.env.VITE_AIRTABLE_TOKEN
+  const BASE_ID = process.env.VITE_AIRTABLE_BASE_ID
 
-    if (!token || !baseId || !table) {
-      return res.status(500).json({
-        error: "Missing env vars",
-        needed: ["AIRTABLE_TOKEN", "AIRTABLE_BASE_ID", "AIRTABLE_TABLE"],
-      });
+  const response = await fetch(
+    `https://api.airtable.com/v0/${BASE_ID}/Restaurants`,
+    {
+      headers: {
+        Authorization: `Bearer ${AIRTABLE_TOKEN}`,
+      },
     }
+  )
 
-    const url = `https://api.airtable.com/v0/${baseId}/${encodeURIComponent(table)}?pageSize=100`;
+  const data = await response.json()
 
-    const r = await fetch(url, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+  // Airtable → 앱용 데이터 변환
+  const restaurants = data.records.map((record) => {
+    const f = record.fields
 
-    const text = await r.text();
-    if (!r.ok) {
-      return res.status(r.status).json({
-        error: "Airtable request failed",
-        details: text,
-      });
+    return {
+      id: record.id,
+      name: f.Name,
+      shortDesc: f.ShortDesc,
+      category: f.Category,
+      naverMapUrl: f.NaverMapURL,
+
+      photos: [
+        f["Image1(Menu)"]?.[0]?.url,
+        f["Image2(Vibe)"]?.[0]?.url,
+        f["Image3(Menu)"]?.[0]?.url,
+      ].filter(Boolean),
+
+      walkFromSinchon: f.WalkFromSinchonMin,
+      walkFromYonsei: f.WalkFromYonseiMin,
+      seatingLayout: f.SeatingLayout,
+      size: f.Size,
     }
+  })
 
-    const data = JSON.parse(text);
-
-    const imgUrl = (arr) =>
-      Array.isArray(arr) && arr[0] && arr[0].url ? arr[0].url : null;
-
-    const normalized = (data.records || []).map((rec) => {
-      const f = rec.fields || {};
-      return {
-        id: rec.id,
-        name: f.Name ?? "",
-        category: f.Category ?? "",
-        shortDesc: f.ShortDesc ?? "",
-        naverMapUrl: f.NaverMapURL ?? f.NaverMapUrl ?? "",
-        images: [imgUrl(f.Image1), imgUrl(f.Image2), imgUrl(f.Image3)].filter(Boolean),
-      };
-    });
-
-    res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=300");
-    return res.status(200).json(normalized);
-  } catch (e) {
-    return res.status(500).json({ error: "Server error", details: String(e) });
-  }
+  res.status(200).json(restaurants)
 }

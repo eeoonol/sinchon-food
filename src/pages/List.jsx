@@ -2,7 +2,8 @@ import { useParams, Navigate } from 'react-router-dom'
 import BackButton from '../components/BackButton'
 import TopChips from '../components/TopChips'
 import RestaurantCard from '../components/RestaurantCard'
-import { getRestaurantsByType } from '../data/restaurants'
+import { fetchRestaurants } from "../data/restaurants"
+import { useEffect, useState } from "react"
 import { TitleLogo } from '../layouts/AppContainer'
 
 const VALID_TYPES = ['korean', 'western', 'chinese', 'japanese']
@@ -12,7 +13,29 @@ export default function List() {
   if (!VALID_TYPES.includes(type)) {
     return <Navigate to="/category" replace />
   }
-  const restaurants = getRestaurantsByType(type)
+  
+  const [restaurants, setRestaurants] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState("")
+
+
+useEffect(() => {
+  ;(async () => {
+    try {
+      const data = await fetchRestaurants()
+      setRestaurants(data.filter(r => r.category === type))
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setLoading(false)
+    }
+  })()
+}, [type])
+
+
+if (loading) return <div style={{ padding: 16 }}>Loading...</div>
+if (error) return <div style={{ padding: 16 }}>Error: {error}</div>
+
 
   return (
     <div className="page" style={{ padding: 0, alignItems: 'stretch' }}>
