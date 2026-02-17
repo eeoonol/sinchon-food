@@ -52,6 +52,10 @@ export default async function handler(req, res) {
         shortDesc: f["ShortDesc"] || "",
         category: f["Category"] || "",
         naverMapUrl: f["NaverMapURL"] || "",
+        walkFromSinchonMin: f["WalkFromSinchonMin"] ?? null,
+        walkFromYonseiMin: f["WalkFromYonseiMin"] ?? null,
+        seatingLayout: f["SeatingLayout"] || "",
+        size: f["Size"] || "",
         photos,
       };
     });
