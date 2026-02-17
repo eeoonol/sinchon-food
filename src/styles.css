@@ -469,10 +469,9 @@ body {
   height: 90px;
 
   flex-shrink: 0;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
+  min-height: 0; /* 기존 160px 무력화 */
 }
+
 
 
 /* ----------------------------------------
@@ -498,9 +497,8 @@ body {
   flex: 0 0 100%;
   width: 100%;
   height: 100%;
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
   position: relative;
+  aspect-ratio: auto; 
 }
 
 
@@ -510,6 +508,7 @@ body {
   object-fit: cover;
   display: block;
 }
+
 
 .photo-carousel-dots {
   position: absolute;

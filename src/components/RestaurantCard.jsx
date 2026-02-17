@@ -54,7 +54,9 @@ export default function RestaurantCard({ restaurant }) {
               </a>
             </div>
           </div>
-          <PhotoCarousel photos={restaurant.photos} />
+          <div className="restaurant-card-carousel-wrap">
+            <PhotoCarousel photos={restaurant.photos} />
+          </div>
         </div>
       </article>
 
