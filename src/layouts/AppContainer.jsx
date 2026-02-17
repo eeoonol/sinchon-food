@@ -1,4 +1,3 @@
-import { useRef, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 
@@ -16,56 +15,24 @@ export function TitleLogo({ as: Tag = 'h1', className = '', ...props }) {
   )
 }
 
-function pathDepth(path) {
-  if (path === '/') return 0
-  if (path === '/category') return 1
-  if (path.startsWith('/list/')) return 2
-  return 0
-}
-
-const slideVariants = {
-  enter: (direction) => ({
-    x: direction > 0 ? 320 : -320,
-    opacity: 0,
-  }),
-  center: {
-    x: 0,
-    opacity: 1,
-  },
-  exit: (direction) => ({
-    x: direction > 0 ? -320 : 320,
-    opacity: 0,
-    pointerEvents: 'none',
-  }),
+const fadeVariants = {
+  enter: { opacity: 0 },
+  center: { opacity: 1, transition: { duration: 0.18 } },
+  exit: { opacity: 0, transition: { duration: 0.12 }, pointerEvents: 'none' },
 }
 
 export default function AppContainer({ children }) {
   const location = useLocation()
-  const prevPathRef = useRef(location.pathname)
-  const directionRef = useRef(1)
-
-  useEffect(() => {
-    const prev = prevPathRef.current
-    const curr = location.pathname
-    if (prev !== curr) {
-      directionRef.current = pathDepth(curr) >= pathDepth(prev) ? 1 : -1
-      prevPathRef.current = curr
-    }
-  }, [location.pathname])
-
-  const direction = directionRef.current
 
   return (
     <div className="app-container">
-      <AnimatePresence mode="wait" custom={direction}>
+      <AnimatePresence mode="wait">
         <motion.div
           key={location.pathname}
-          custom={direction}
-          variants={slideVariants}
+          variants={fadeVariants}
           initial="enter"
           animate="center"
           exit="exit"
-          transition={{ duration: 0.25, ease: 'easeInOut' }}
           style={{ width: '100%', minHeight: '100vh' }}
         >
           {children}

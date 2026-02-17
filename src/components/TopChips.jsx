@@ -5,14 +5,16 @@ const TYPES = ['korean', 'western', 'chinese', 'japanese']
 
 export default function TopChips({ currentType }) {
   return (
-    <nav className="chips">
+    <nav className="tabsRow" role="tablist">
       {TYPES.map((type) => {
         const isActive = type === currentType
         return (
           <Link
             key={type}
             to={`/list/${type}`}
-            className={`chip ${isActive ? 'chip-active' : ''}`}
+            className={`tabBtn ${isActive ? 'active' : ''}`}
+            role="tab"
+            aria-selected={isActive}
           >
             {CATEGORY_CHIP_LABELS[type]}
           </Link>

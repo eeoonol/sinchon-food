@@ -16,7 +16,7 @@ export default function List() {
 
   return (
     <div className="page" style={{ padding: 0, alignItems: 'stretch' }}>
-      <div className="list-top">
+      <div className="list-top topBar">
         <BackButton to="/category" />
         <TopChips currentType={type} />
       </div>
